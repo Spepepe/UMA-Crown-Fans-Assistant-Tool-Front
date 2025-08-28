@@ -105,22 +105,6 @@ export const FactorResult: React.FC<FactorResultProps> = ({
   return (
     // Added font-mochiy-pop class for the cute font
     <div className="font-mochiy-pop">
-      <div className="bg-transparent p-4 sm:p-6">
-        <div className="flex flex-col sm:flex-row items-center justify-center space-y-2 sm:space-y-0 sm:space-x-8">
-          <div className="flex flex-col items-center">
-            <span className="font-bold text-gray-600">馬場</span>
-            <span className="font-semibold text-lg">{surface}</span>
-          </div>
-          <div className="flex flex-col items-center">
-            <span className="font-bold text-gray-600">距離</span>
-            <span className="font-semibold text-lg">{distance}</span>
-          </div>
-          <div className="flex flex-col items-center">
-            <span className="font-bold text-gray-600">脚質</span>
-            <span className="font-semibold text-lg">{style}</span>
-          </div>
-        </div>
-      </div>
       
       {/* 計算結果の血統図 */}
       <div className="">
