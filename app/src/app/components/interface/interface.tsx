@@ -193,3 +193,38 @@ export interface Jewel{
     //ジュエル数
     jewel_amount:number;
 }
+
+// 祖父母A因子情報用インターフェース
+export interface GrandparentAFactors {
+  aaa?: string;
+  aab?: string;
+  aba?: string;
+  abb?: string;
+}
+
+// 祖父母B因子情報用インターフェース
+export interface GrandparentBFactors {
+  baa?: string;
+  bab?: string;
+  bba?: string;
+  bbb?: string;
+}
+
+// 全体の祖父母因子情報用インターフェース
+export interface GrandparentFactors {
+  grandparent_a?: GrandparentAFactors;
+  grandparent_b?: GrandparentBFactors;
+}
+
+// 因子計算パラメータ用インターフェース
+export interface FactorCalculationParams {
+  distanceId: number;
+  surfaceId: number;
+  styleId: number;
+  parentUmamusumeId: number;
+  grandparentUmamusumeId: number;
+  grandmotherUmamusumeId: number;
+  parentUmamusume: Umamusume;
+  grandparentUmamusume: Umamusume;
+  grandmotherUmamusume: Umamusume;
+}

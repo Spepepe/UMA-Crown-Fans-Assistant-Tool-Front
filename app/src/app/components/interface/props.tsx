@@ -1,4 +1,4 @@
-import { Umamusume , Race , Live , Acter , RemainingRace , RegistUmamusume , Jewel} from './interface';
+import { Umamusume , Race , Live , Acter , RemainingRace , RegistUmamusume , Jewel , FactorCalculationParams , GrandparentFactors} from './interface';
 
 /*
  * layout Start
@@ -255,4 +255,35 @@ export interface JewelControllerCalendarProps {
 
 /*
  * jewelController End
+ */
+
+/*
+ * factorCalculator Start
+ */
+
+//factorSelect.tsxで利用する
+export interface FactorSelectProps {
+  onStep: (params: FactorCalculationParams) => void;
+}
+
+//factorResult.tsxで利用する
+// API レスポンス用インターフェース
+export interface FactorApiResponse {
+  data?: {
+    inheritance_factors?: GrandparentFactors;
+  };
+}
+
+// FactorResult コンポーネントのProps用インターフェース
+export interface FactorResultProps {
+  factorData: FactorApiResponse | null;
+  distanceId: number;
+  surfaceId: number;
+  styleId: number;
+  parentUmamusume: Umamusume | undefined;
+  grandparentUmamusume: Umamusume | undefined;
+  grandmotherUmamusume: Umamusume | undefined;
+}
+/*
+ * factorCalculator Start
  */

@@ -6,7 +6,9 @@ import { RemainingRaceList } from '../container/remainingRaceList/remainingRaceL
 import { LiveList } from '../container/liveList/liveList';
 import { ActerList } from '../container/acterList/acterList';
 import { JewelController } from '../container/jewelController/jewelController';
+import { FactorCalculator } from '../container/factorCalculator/factorCalculator';
 import { ContentProps } from '../interface/props';
+
 
 //コンテンツ情報
 export const Content :React.FC<ContentProps> = ({ selectedContent, token}) => {
@@ -38,6 +40,10 @@ export const Content :React.FC<ContentProps> = ({ selectedContent, token}) => {
         case 'jewelController':
             return (
                 <JewelController token={token}></JewelController>
+            );
+        case 'factorCalculator':
+            return (
+                <FactorCalculator></FactorCalculator>
             );
     }
   };
