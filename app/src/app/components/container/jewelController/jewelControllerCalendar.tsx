@@ -65,8 +65,8 @@ export const JewelControllerCalendar = forwardRef<JewelControllerCalendarHandle,
     };
 
     const getdDiffJewel = (date:number) => {
-        const today = jewels.filter(jewel => jewel.day === date).find(jewel => jewel.jewel_amount);
-        const yesterday = jewels.filter(jewel => jewel.day === date -1).find(jewel => jewel.jewel_amount);
+        const today = jewels?.filter(jewel => jewel.day === date).find(jewel => jewel.jewel_amount);
+        const yesterday = jewels?.filter(jewel => jewel.day === date -1).find(jewel => jewel.jewel_amount);
 
         if(today){
             if(yesterday){

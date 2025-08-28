@@ -24,9 +24,7 @@ export const RaceList = () => {
       const response = await fetch("/api/race/list", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json", // ← ここを追加
-        // 必要なら認証もここに追加
-        // "Authorization": "Bearer YOUR_TOKEN"
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({ state: selectedState, distance: selectedDistance }),
     });
