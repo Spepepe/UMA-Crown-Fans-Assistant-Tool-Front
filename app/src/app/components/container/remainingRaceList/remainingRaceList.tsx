@@ -155,7 +155,7 @@ export const RemainingRaceList : React.FC<RemainingRaceListProps> = ({token})  =
         <RemainingRaceListHeader></RemainingRaceListHeader>
         <tbody>
           {remainingRaces.map((remainingRace) => (
-            <RemainingRaceListData remainingRace={remainingRace} checkRaces={openCheckRaces} />
+            <RemainingRaceListData key={remainingRace.umamusume.umamusume_id} remainingRace={remainingRace} checkRaces={openCheckRaces} />
           ))}
         </tbody>
       </table>
