@@ -117,7 +117,7 @@ export const FactorResult: React.FC<FactorResultProps> = ({
               <span className="font-bold text-xl text-center mb-3">{parentUmamusume?.umamusume_name}</span>
               <div className="w-32 h-32 rounded-full overflow-hidden shadow-lg mb-3"
                 style={{
-                  backgroundImage: `url(/app/public/image/umamusumeData/${parentUmamusume?.umamusume_name}.png)`,
+                  backgroundImage: `url(/image/umamusumeData/${parentUmamusume?.umamusume_name}.png)`,
                   backgroundSize: 'cover',
                   backgroundPosition: 'center'
                 }}>
@@ -135,7 +135,7 @@ export const FactorResult: React.FC<FactorResultProps> = ({
                 <span className="font-bold text-xl text-center mb-3">{grandparentUmamusume?.umamusume_name}</span>
                 <div className="w-28 h-28 rounded-full overflow-hidden shadow-lg mb-3"
                   style={{
-                    backgroundImage: `url(/app/public/image/umamusumeData/${grandparentUmamusume?.umamusume_name}.png)`,
+                    backgroundImage: `url(image/umamusumeData/${grandparentUmamusume?.umamusume_name}.png)`,
                     backgroundSize: 'cover',
                     backgroundPosition: 'center'
                   }}>
@@ -151,7 +151,7 @@ export const FactorResult: React.FC<FactorResultProps> = ({
                 <span className="font-bold text-xl text-center mb-3">{grandmotherUmamusume?.umamusume_name}</span>
                 <div className="w-28 h-28 rounded-full overflow-hidden shadow-lg mb-3"
                   style={{
-                    backgroundImage: `url(/app/public/image/umamusumeData/${grandmotherUmamusume?.umamusume_name}.png)`,
+                    backgroundImage: `url(/image/umamusumeData/${grandmotherUmamusume?.umamusume_name}.png)`,
                     backgroundSize: 'cover',
                     backgroundPosition: 'center'
                   }}>

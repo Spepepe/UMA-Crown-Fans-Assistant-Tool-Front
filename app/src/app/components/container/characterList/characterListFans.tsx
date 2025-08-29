@@ -35,7 +35,7 @@ export const CharacterListFans : React.FC<CharacterListFansProps>  = ({ selectUm
           <div 
             className="text-center text-4xl font-bold text-white my-12" 
             style={{ 
-              backgroundImage: `url(/app/public/image/umamusumeData/${selectUmamusume?.umamusume.umamusume_name}.png)`, 
+              backgroundImage: `url(/image/umamusumeData/${selectUmamusume?.umamusume.umamusume_name}.png)`, 
               backgroundSize: 'cover', 
               backgroundPosition: 'center', 
               padding: '50px',
