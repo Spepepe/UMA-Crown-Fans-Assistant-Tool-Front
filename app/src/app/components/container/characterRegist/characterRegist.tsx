@@ -150,7 +150,7 @@ export const CharacterRegist : React.FC<CharacterRegistProps> = ({token}) => {
       <div>
         <div className="flex gap-4 mb-6 sticky top-0 bg-white/50 z-10 p-4">
           <div className="w-1/2 h-96 flex-none rounded-full overflow-hidden shadow-lg"
-          style={{ backgroundImage: `url(/app/public/image/umamusumeData/${selectedUmamusume?.umamusume_name}.png)`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+          style={{ backgroundImage: `url(/image/umamusumeData/${selectedUmamusume?.umamusume_name}.png)`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
           </div>
   
           <div className="w-1/2 h-96 flex-grow flex flex-col justify-center">
