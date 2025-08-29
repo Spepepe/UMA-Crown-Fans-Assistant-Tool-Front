@@ -26,7 +26,7 @@ export const Entry = () => {
     const [token, setToken] = useState<string | null>(typeof window !== "undefined" ? localStorage.getItem("auth_token") : null);
     
     //ユーザーの表示画像
-    const image = user?.user_image ? user?.user_image : "StillinLove.png";
+    const image = "StillinLove.png";
 
     // 初回マウント時にユーザーデータを取得
     useEffect(() => {

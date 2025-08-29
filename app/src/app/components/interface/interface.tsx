@@ -8,24 +8,6 @@ export interface User{
     password:string;
     //メールアドレス
     email:string;
-    //電話番号
-    phone_number:string;
-    //ユーザー画像
-    user_image:string;
-    //誕生日
-    birthday:Date;
-    //性別
-    gender:number;
-    //住所
-    location:string;
-    //国
-    country:string;
-    //使用状態
-    state:boolean;
-    //役割
-    role:boolean;
-    //APIトークン
-    api_token:string;
 }
 
 //ウマ娘用インターフェース
