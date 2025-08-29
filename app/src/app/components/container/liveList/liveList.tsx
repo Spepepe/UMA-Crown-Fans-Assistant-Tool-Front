@@ -120,7 +120,7 @@ export const LiveList : React.FC<LiveListProps> = ({token}) => {
           <LiveListHeader></LiveListHeader>
           <tbody>
           {lives.map((live) => (
-            <LiveListData live={live} onClick={onClick}/>
+            <LiveListData live={live}  key={live.live_id}  onClick={onClick}/>
           ))}
           </tbody>
         </table>
