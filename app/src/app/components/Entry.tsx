@@ -3,7 +3,7 @@ import { useState , useEffect } from 'react';
 import { Sidebar } from './layout/sidebar';
 import { Content } from './layout/content';
 import { Auth } from './auth/auth';
-import { User } from './interface/interface';
+import { User , TokenValidationResult ,JWTPayload} from './interface/interface';
 
 //エントリーポイント
 export const Entry = () => {
@@ -28,8 +28,74 @@ export const Entry = () => {
     //ユーザーの表示画像
     const image = "StillinLove.png";
 
+    // JWTトークンの検証関数
+    const validateToken = (token: string): TokenValidationResult => {
+        try {
+            const base64Payload = token.split('.')[1];
+            if (!base64Payload) {
+                return {
+                    isValid: false,
+                    isExpired: false,
+                    error: "無効なJWTフォーマット"
+                };
+            }
+            
+            const payload: JWTPayload = JSON.parse(atob(base64Payload));
+            const currentTime = Math.floor(Date.now() / 1000);
+            const isExpired = payload.exp < currentTime;
+            
+            return {
+                isValid: true,
+                isExpired,
+                payload,
+                error: isExpired ? "トークンの期限が切れています" : undefined
+            };
+        } catch (error) {
+            return {
+                isValid: false,
+                isExpired: false,
+                error: `トークンのデコードに失敗: ${error instanceof Error ? error.message : 'Unknown error'}`
+            };
+        }
+    };
+
+    // 期限切れトークンをクリーンアップする関数
+    const clearExpiredToken = (): void => {
+        localStorage.removeItem("auth_token");
+    };
+
+
     // 初回マウント時にユーザーデータを取得
     useEffect(() => {
+        // まずlocalStorageからトークンを確認
+        const storedToken = localStorage.getItem("auth_token");
+        
+        if (storedToken) {
+            // トークンの検証を実行
+            const validationResult: TokenValidationResult = validateToken(storedToken);
+            
+            if (!validationResult.isValid || validationResult.isExpired) {
+                // 無効または期限切れの場合
+                console.log("保存されたトークンが無効です:", validationResult.error);
+                clearExpiredToken();
+                setToken(null);
+                setIsAuthenticated(false);
+                return;
+            }
+            
+            // トークンが有効な場合のみ認証状態を更新
+            if (!isAuthenticated || token !== storedToken) {
+                setToken(storedToken);
+                setIsAuthenticated(true);
+            }
+        } else if (isAuthenticated) {
+            // トークンがないのに認証済み状態の場合はリセット
+            setToken(null);
+            setIsAuthenticated(false);
+            return;
+        }
+        
+        // 認証済みかつ有効なトークンがある場合のみユーザーデータを取得
         if (isAuthenticated && token) {
             getUserdata();
         }

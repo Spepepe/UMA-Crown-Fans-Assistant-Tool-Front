@@ -1,3 +1,19 @@
+// トークン検証関連の型定義
+export interface TokenValidationResult {
+  isValid: boolean;
+  isExpired: boolean;
+  payload?: JWTPayload;
+  error?: string;
+}
+
+export interface JWTPayload {
+  exp: number;
+  iat: number;
+  sub: string;
+  [key: string]: any;
+}
+
+
 //ユーザー情報を格納するインターフェース
 export interface User{
     //主キー
