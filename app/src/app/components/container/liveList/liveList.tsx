@@ -1,10 +1,11 @@
-import { useState , useEffect } from 'react';
-import { Live,Umamusume } from '../../interface/interface';
+import { useState, useEffect } from 'react';
+import { Live, Umamusume } from '../../interface/interface';
 import { LiveListHeader } from './liveListHeader';
 import { LiveListData } from './liveListData';
 import { LiveListCharacterHeader } from './liveListCharacterHeader';
 import { LiveListCharacterData } from './liveListCharacterData';
 import { LiveListProps } from '../../interface/props';
+import { liveService } from 'src';
 
 //ライブ情報表示画面
 export const LiveList : React.FC<LiveListProps> = ({token}) => {
@@ -13,50 +14,41 @@ export const LiveList : React.FC<LiveListProps> = ({token}) => {
     const [lives, setLives] = useState<Live[]>([]);
     
     //選択したライブ情報を格納する
-    const [selectLive,setSelectLive] = useState<Live>();
+    const [selectLive, setSelectLive] = useState<Live>();
     
     //対象のライブ情報に紐づくウマ娘を格納する
     const [umamusumes, setUmamusumes] = useState<Umamusume[]>([]);
     
     //ローディング画面
-    const [loading,setLoading] = useState(true);
+    const [loading, setLoading] = useState<boolean>(true);
     
     //ライブを選択している状態
-    const [isCharacter,setIsCharacter] = useState(false);
+    const [isCharacter, setIsCharacter] = useState<boolean>(false);
+
+    useEffect(() => {
+      fetchLives();
+    }, []);
 
     //ライブを選択した処理
-    const onClick = (live : Live) =>{
+    const onClick = (live: Live): void => {
       setSelectLive(live);
       fetchUmamusumes(live);
       setIsCharacter(true);
     }
 
     //ライブ選択後戻るボタンを選択した処理
-    const onReturn = () => {
+    const onReturn = (): void => {
       setIsCharacter(false);
     }
 
-    useEffect(() => {
-          fetchlives();
-    },[]);
-
     //ライブに紐づくウマ娘を取得する処理
-    const fetchUmamusumes = async (live : Live) => {
+    const fetchUmamusumes = async (live: Live): Promise<void> => {
       try {
         if (!token) {
           console.error('トークンが見つかりません');
           return;
-      }
-      const response = await fetch("/api/live/umamusume",{
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({liveId:live?.live_id}),
-      });
-        const responseJson = await response.json();
-        const data :Umamusume[] = responseJson.data;
+        }
+        const data = await liveService.fetchLiveUmamusumes(token, live);
         setUmamusumes(data);
       } catch (error) {
         console.error("Failed to fetch lives:", error);
@@ -66,11 +58,9 @@ export const LiveList : React.FC<LiveListProps> = ({token}) => {
     }
 
     //ライブ情報を取得する処理
-    const fetchlives = async () => {
+    const fetchLives = async (): Promise<void> => {
       try {
-        const response = await fetch("/api/live/list");
-        const responseJson = await response.json();
-        const data :Live[] = responseJson.data;
+        const data = await liveService.fetchLives();
         setLives(data);
       } catch (error) {
         console.error("Failed to fetch lives:", error);

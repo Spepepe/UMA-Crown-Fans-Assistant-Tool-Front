@@ -65,6 +65,7 @@ export interface HeaderProps{
 //header.tsxで利用する
 export interface Item {
     display: string;
+    width?: string;
 }
 
 //inputField.tsxで利用する
@@ -102,7 +103,7 @@ export interface CharacterRegistProps {
 //aptitude.tsxで利用する
 export interface AptitudeProps {
     name: string;
-    aptitude: string;
+    aptitude: string | undefined;
 }
 
 //characterRegistData.tsxで利用する

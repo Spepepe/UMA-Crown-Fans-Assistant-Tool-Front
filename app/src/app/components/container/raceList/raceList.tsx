@@ -1,62 +1,35 @@
-import { useState , useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Race } from '../../interface/interface';
 import { RaceListHeader } from './raceListHeader';
 import { RaceListData } from './raceListdata';
+import { raceApi } from 'src';
 
 // レース情報表示画面
 export const RaceList = () => {
-
-    // レース情報を格納する配列
-    const [ races , setRaces ] = useState<Race[]>([]);
-    
-    // ローディング画面
-    const [ loading , setLoading ] = useState(true);
-
-    // 選択馬場
-    const [ selectedState , setSelectedState ] = useState<number>(-1);
-
-    // 距離
-    const [ selectedDistance , setSelectedDistance ] = useState<number>(-1);
-
-    // レース情報取得処理
-    const fetchRaces = async () => {
-    try {
-      const response = await fetch("/api/race/list", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ state: selectedState, distance: selectedDistance }),
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const responseJson = await response.json();
-    console.log(responseJson);
-
-    // data が配列でない場合は空配列に変換
-    const data = Array.isArray(responseJson.data) ? responseJson.data : [];
-    setRaces(data);
-
-  } catch (error) {
-    console.error("Failed to fetch races:", error);
-    setRaces([]); // エラー時も配列にしておく
-  } finally {
-    setLoading(false);
-  }
-}
-
+    const [races, setRaces] = useState<Race[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [selectedState, setSelectedState] = useState<number>(-1);
+    const [selectedDistance, setSelectedDistance] = useState<number>(-1);
 
     useEffect(() => {
       fetchRaces();
-    },[]);
+    }, []);
 
-    // 馬場もしくは距離が変更された時にレースを取得する
     useEffect(() => {
       fetchRaces();
     }, [selectedState, selectedDistance]);
+
+    const fetchRaces = async (): Promise<void> => {
+      try {
+        const data = await raceApi.getRaceList(selectedState, selectedDistance);
+        setRaces(data);
+      } catch (error) {
+        console.error("Failed to fetch races:", error);
+        setRaces([]);
+      } finally {
+        setLoading(false);
+      }
+    };
 
     if (loading) {
         return <div className="min-h-full flex justify-center bg-Looding bg-cover"></div>

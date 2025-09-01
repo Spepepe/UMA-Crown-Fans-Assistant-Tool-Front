@@ -1,77 +1,37 @@
-import { useState } from "react";
+import { useState } from 'react';
 import { Regist } from './regist';
 import { PasswordForget } from './passwordForget';
 import { InputField } from '../common/inputField';
-import { AuthProps } from '../interface/props';
+import { AuthProps, useAuth } from 'src';
 
 //ログイン処理を行う画面
 export const Auth: React.FC<AuthProps>  = ({onLogin}) => {
     // ユーザーの名前
-    const [ userName, setUserName ] = useState("");
+    const [userName, setUserName] = useState<string>("");
 
     // パスワード
-    const [ password, setPassword ] = useState("");
+    const [password, setPassword] = useState<string>("");
 
     // パスワードを忘れた場合の画面表示状態管理
-    const [ passwordForget , setPasswordForget ] = useState(false);
+    const [passwordForget, setPasswordForget] = useState<boolean>(false);
 
     // ユーザー登録の画面表示状態管理
-    const [ isRegistering , setIsRegistering ] = useState(false);
+    const [isRegistering, setIsRegistering] = useState<boolean>(false);
 
-    /**
-     * ユーザーのログインを処理する関数。
-     */
-    const handleLogin = (loginUserName?: string, loginPassword?: string) => {
-        const currentUserName = loginUserName || userName;
-        const currentPassword = loginPassword || password;
-        if (currentUserName && currentPassword) {
-            fetch("/api/user/login", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ userName: currentUserName, password: currentPassword }),
-            })
-            .then((response) => response.json())
-            .then((data) => {
-                if (data.message === "ログイン成功") {
-                    alert(data.message);
-                    localStorage.setItem("auth_token", data.token);
-                    console.log(data);
-                    onLogin();
-                }else{
-                    alert(data.message);
-                }
-            })
-            .catch((error) => {
-                alert("ログインできませんでした。");
-            });
-        }else{
-            alert("ユーザーネームとパスワードを入力してください");
-        }
-    };
+    const { handleLogin, handleRegist } = useAuth(onLogin);
 
-    //ユーザー登録後、ログインする処理
-    const handleRegist = (userName: string, password: string) => {
-        setIsRegistering(false);
-        handleLogin(userName,password);
-    };
-
-    //ユーザー登録画面表示処理
-    const newRegist = () =>{
+    const newRegist = (): void => {
         setIsRegistering(true);
     };
 
-    //パスワードを忘れた場合の画面表示処理
-    const handlePasswordForget = () =>{
+    const handlePasswordForget = (): void => {
         setPasswordForget(true);
-    }
+    };
 
-    //ログイン画面の表示処理
-    const handleTop = () =>{
+    const handleTop = (): void => {
         setIsRegistering(false);
         setPasswordForget(false);
-    }
+    };
 
 
     if (passwordForget){
@@ -93,7 +53,7 @@ export const Auth: React.FC<AuthProps>  = ({onLogin}) => {
                     type="text"
                     value={userName}
                     placeholder="ユーザー名を入力してください"
-                    onChange={(e) => setUserName(e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUserName(e.target.value)}
                 />
 
             </div>
@@ -105,13 +65,13 @@ export const Auth: React.FC<AuthProps>  = ({onLogin}) => {
                     type="password"
                     value={password}
                     placeholder="パスワードを入力してください"
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
                 />
             </div>
 
             <button
                 className="w-full px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none"
-                onClick={() => handleLogin()}
+                onClick={() => handleLogin(userName, password)}
             >
                 ログイン
             </button>

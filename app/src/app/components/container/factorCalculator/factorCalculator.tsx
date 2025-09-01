@@ -1,64 +1,42 @@
-import { useState, useEffect } from 'react';
-import React from 'react';
+import React, { useState } from 'react';
 import { FactorResult } from './factorResult';
 import { FactorSelect } from './factorSelect';
-import { Umamusume , FactorCalculationParams } from '../../interface/interface';
+import { Umamusume, FactorCalculationParams } from '../../interface/interface';
+import { useFactorCalculator } from '../../../services/util/useFactorCalculator';
 
 //ウマ娘親因子計算機コンポーネント
 export const FactorCalculator: React.FC = () => {
-  const [step, setStep] = useState(false);
-  const [factorData, setFactorData] = useState(null);
+  const [step, setStep] = useState<boolean>(false);
+
+  const [factorData, setFactorData] = useState<any>(null);
 
   const [parentUmamusume, setParentUmamusume] = useState<Umamusume>();
-  const [grandparentUmamusume, setGrandparentUmamusume] = useState<Umamusume>();
-  const [grandmotherUmamusume, setGrandmotherUmamusume] = useState<Umamusume>();
 
+  const [grandparentUmamusume, setGrandparentUmamusume] = useState<Umamusume>();
+
+  const [grandmotherUmamusume, setGrandmotherUmamusume] = useState<Umamusume>();
   const [distanceId, setDistanceId] = useState<number>(1);
+
   const [surfaceId, setSurfaceId] = useState<number>(1);
+
   const [styleId, setStyleId] = useState<number>(1);
-  const handleCalculationComplete = (params : FactorCalculationParams) => {
+
+  const { handleCalculationComplete: hookHandleCalculationComplete } = useFactorCalculator();
+
+  const handleCalculationComplete = async (params: FactorCalculationParams): Promise<void> => {
     setParentUmamusume(params.parentUmamusume);
     setGrandparentUmamusume(params.grandparentUmamusume);
     setGrandmotherUmamusume(params.grandmotherUmamusume);
     setDistanceId(params.distanceId);
     setSurfaceId(params.surfaceId);
     setStyleId(params.styleId);
-    getFactorData(params);
-    setStep(true);
-  }
-
-  const getFactorData = async (params : FactorCalculationParams) => {
+    
     try {
-      const queryParams = new URLSearchParams({
-        distance_id: params.distanceId.toString(),
-        surface_id: params.surfaceId.toString(),
-        style_id: params.styleId.toString(),
-        parent_umamusume_id: params.parentUmamusumeId.toString(),
-        grandparent_umamusume_id: params.grandparentUmamusumeId.toString(),
-        grandmother_umamusume_id: params.grandmotherUmamusumeId.toString()
-      });
-
-      const response = await fetch(`/api/factor/calculate?${queryParams}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      console.log('Fetched factor data:', data);
-      
-      // 取得したデータをstateに保存
+      const data = await hookHandleCalculationComplete(params);
       setFactorData(data);
-      
-      return data;
+      setStep(true);
     } catch (error) {
-      console.error('Error fetching factor data:', error);
-      throw error;
+      console.error('Factor calculation failed:', error);
     }
   };
 

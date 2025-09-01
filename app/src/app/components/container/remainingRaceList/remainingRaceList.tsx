@@ -1,43 +1,44 @@
-import { useState , useEffect } from 'react';
-import { Umamusume , RemainingRace , RaceEntryPattern } from '../../interface/interface';
+import { useState, useEffect } from 'react';
+import { Umamusume, RemainingRace, RaceEntryPattern } from '../../interface/interface';
 import { RemainingRaceListHeader } from './remainingRaceListHeader';
 import { RemainingRaceListData } from './remainingRaceListData';
 import { RemainingRaceListManual } from "./remainingRaceListManual";
 import { RemainingRaceListProps } from '../../interface/props';
+import { remainingRaceService } from 'src';
 
 //残レース情報表示画面
 export const RemainingRaceList : React.FC<RemainingRaceListProps> = ({token})  => {
     
     //残レース情報を格納する配列
-    const [ remainingRaces, setRemainingRaces ] = useState<RemainingRace[]>([]);
+    const [remainingRaces, setRemainingRaces] = useState<RemainingRace[]>([]);
     
     //ローディング画面
-    const [ loading , setLoading ] = useState(true);
+    const [loading, setLoading] = useState<boolean>(true);
     
     //ウマ娘を選択しているか判定する
-    const [ isCheckRace , setIsCheckRace ] = useState(false);
+    const [isCheckRace, setIsCheckRace] = useState<boolean>(false);
     
     //選択したウマ娘情報を格納する
-    const [ selectUmamusume , setSelectUmamusume ] = useState<Umamusume | undefined>(undefined);
+    const [selectUmamusume, setSelectUmamusume] = useState<Umamusume | undefined>(undefined);
     
     //推奨情報を格納する
-    const [ raceEntryPattern , setRaceEntryPattern ] = useState<RaceEntryPattern>();
+    const [raceEntryPattern, setRaceEntryPattern] = useState<RaceEntryPattern>();
     
     //レース出走処理画面の表示有無
-    const [ isManualRaces , setIsManualRaces ] = useState(false);
+    const [isManualRaces, setIsManualRaces] = useState<boolean>(false);
+
+    useEffect(() => {
+      fetchRaces();
+    }, []);
 
     //残レース情報を取得する
-    const fetchRaces = async () => {
+    const fetchRaces = async (): Promise<void> => {
       try {
-        const response = await fetch("/api/race/remaining",{
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`,
-          },
-        });
-        const responseJson = await response.json();
-        const data :RemainingRace[] = responseJson.data;
+        if (!token) {
+          console.error('トークンが見つかりません');
+          return;
+        }
+        const data = await remainingRaceService.fetchRemainingRaces(token);
         setRemainingRaces(data);
       } catch (error) {
         console.error("Failed to fetch races:", error);
@@ -47,50 +48,37 @@ export const RemainingRaceList : React.FC<RemainingRaceListProps> = ({token})  =
     }
 
     //レース出走推奨パターンを取得する
-    const fetchEntryPattern = async (umamusume : Umamusume) => {
-          try {
-            if (!token) {
-                console.error('トークンが見つかりません');
-                return;
-            }
-            const response = await fetch("/api/race/remaining-pattern",{
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`,
-              },
-              body: JSON.stringify({umamusumeId:umamusume?.umamusume_id}),
-            });
-            const responseJson = await response.json();
-            const data = responseJson.data;
-            setRaceEntryPattern(data);
-          } catch (error) {
-            console.error("Failed to fetch races:", error);
-          }
+    const fetchEntryPattern = async (umamusume: Umamusume): Promise<void> => {
+      if (!token) {
+        console.error('トークンが見つかりません');
+        return;
+      }
+      const data = await remainingRaceService.fetchEntryPattern(token, umamusume);
+      if (data) {
+        setRaceEntryPattern(data);
+      }
     };
 
     //出走を行う処理
-    const openCheckRaces = (umamusume : Umamusume) => {
+    const openCheckRaces = (umamusume: Umamusume): void => {
       setSelectUmamusume(umamusume);
       fetchEntryPattern(umamusume);
       setIsCheckRace(true);
     };
 
     //戻るボタンを押下した処理
-    const returnCheckRaces = () => {
+    const returnCheckRaces = (): void => {
       fetchRaces();
       setIsCheckRace(false);
       setIsManualRaces(false);
     }
 
     //レース出走を表示する
-    const onManualRaces = () =>{
+    const onManualRaces = (): void => {
       setIsManualRaces(true);
     }
 
-    useEffect(() => {
-      fetchRaces();
-    },[]);
+
 
     if (loading) {
       return <div className="min-h-full flex justify-center bg-cover"></div>

@@ -1,82 +1,53 @@
-import { useState , useEffect ,useRef} from 'react';
+import { useState, useRef } from 'react';
 import React from 'react';
 import { JewelControllerProps } from '../../interface/props';
 import { JewelControllerCalendar, JewelControllerCalendarHandle } from './jewelControllerCalendar';
+import { jewelService } from 'src';
 
 //ジュエル情報管理画面
 export const JewelController : React.FC<JewelControllerProps> = ({token}) => {
 
       const calendarRef = useRef<JewelControllerCalendarHandle>(null);
 
-      // 現在の日時を取得して初期値に設定
-      const getCurrentDate = () => {
-        const now = new Date();
-        return {
-          year: now.getFullYear(),
-          month: now.getMonth() + 1 // getMonth()は0から始まるため+1
-        };
-      };
-
       //選択年（現在の年を初期値として設定）
-      const [year, setYear] = useState<number>(() => getCurrentDate().year);
+      const [year, setYear] = useState<number>(() => jewelService.getCurrentDate().year);
       
       //選択月（現在の月を初期値として設定）
-      const [month, setMonth] = useState<number>(() => getCurrentDate().month);
+      const [month, setMonth] = useState<number>(() => jewelService.getCurrentDate().month);
 
       //ジュエル数
       const [dayJewel, setDayJewel] = useState<number>(0);
-
-      // 年の選択肢を動的に生成（ウマ娘リリース年2021年から現在年+2年まで）
-      const getYearOptions = () => {
-        const currentYear = new Date().getFullYear();
-        const years = [];
-        for (let i = 2021; i <= currentYear + 2; i++) {
-          years.push(i);
-        }
-        return years;
-      };
     
       //年変更イベント
-      const handleYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+      const handleYearChange = (e: React.ChangeEvent<HTMLSelectElement>): void => {
         setYear(Number(e.target.value));
       };
 
       //月変更イベント
-      const handleMonthChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+      const handleMonthChange = (e: React.ChangeEvent<HTMLSelectElement>): void => {
         setMonth(Number(e.target.value));
       };
 
       //本日分登録用入力処理
-      const handleJewelChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const handleJewelChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
         const value = parseInt(e.target.value, 10);
         if (!isNaN(value)) {
           setDayJewel(value);
         }
       }
 
-      const handleFetch = () => {
+      const handleFetch = (): void => {
         calendarRef.current?.fetchJewelData();
       };
 
       //ジュエル登録処理
-      const jewelRegist = async () => {
+      const jewelRegist = async (): Promise<void> => {
         try {
           if (!token) {
               console.error('トークンが見つかりません');
               return;
           }
-          const response = await fetch("/api/jewel/regist", {
-              method: "POST",
-              headers: {
-                  "Content-Type": "application/json",
-                  'Authorization': `Bearer ${token}`
-              },
-              body: JSON.stringify({jewel:dayJewel}),
-          });
-
-          if (!response.ok) {
-              throw new Error("ジュエルの登録に失敗しました");
-          }
+          await jewelService.registerJewel(token, dayJewel);
           setDayJewel(0);
           handleFetch();
         } catch (error) {
@@ -85,8 +56,8 @@ export const JewelController : React.FC<JewelControllerProps> = ({token}) => {
       }
 
       // 現在日時に戻すボタンの処理
-      const resetToCurrentDate = () => {
-        const current = getCurrentDate();
+      const resetToCurrentDate = (): void => {
+        const current = jewelService.getCurrentDate();
         setYear(current.year);
         setMonth(current.month);
       };
@@ -103,7 +74,7 @@ export const JewelController : React.FC<JewelControllerProps> = ({token}) => {
           {/* 年月セレクトを中央に配置 */}
           <div className="flex gap-2 mb-8 justify-center items-center">
             <select value={year} onChange={handleYearChange} className="border p-2 rounded text-lg">
-              {getYearOptions().map((y) => (
+              {jewelService.getYearOptions().map((y) => (
                 <option key={y} value={y}>{y}年</option>
               ))}
             </select>

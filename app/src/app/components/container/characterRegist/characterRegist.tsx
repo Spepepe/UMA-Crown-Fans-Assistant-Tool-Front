@@ -1,13 +1,11 @@
-import React, { useState,useEffect } from 'react';
-import { Race , Umamusume } from '../../interface/interface';
+import React, { useState, useEffect } from 'react';
 import { CharacterRegistHeader } from './characterRegistHeader';
 import { CharacterRegistData } from './characterRegistData';
 import { Aptitude } from './aptitude';
-import { CharacterRegistProps } from '../../interface/props';
+import { Race, Umamusume, CharacterRegistProps, useCharacterRegist } from 'src';
 
 //ウマ娘登録画面
 export const CharacterRegist : React.FC<CharacterRegistProps> = ({token}) => {
-
     //レース情報を格納する配列
     const [races, setRaces] = useState<Race[]>([]);
 
@@ -28,123 +26,32 @@ export const CharacterRegist : React.FC<CharacterRegistProps> = ({token}) => {
       fetchUmamusumes();
     },[]);
 
-    
     useEffect(() => {
       if (umamusumes.length > 0) {
         setSelectedUmamusume(umamusumes[0]);
       }
     }, [umamusumes]);
 
-    const fetchUmamusumes = async () => {
-      try {
-        const response = await fetch("/api/umamusume/regist-list", {
-          method: "GET",
-          headers: {
-            "Authorization": `Bearer ${token}`,
-          },
-        });
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const responseJson = await response.json();
-        console.log('Umamusume API Response:', responseJson);
-        const data: Umamusume[] = responseJson.data || [];
-        setUmamusumes(data);
-      } catch (error) {
-        console.error("Failed to fetch umamusumes:", error);
-        setUmamusumes([]);
-      }
-    }
-
-    const fetchRaces = async () => {
-      try {
-        const response = await fetch("/api/race/regist-list",{
-          method: "GET",
-          headers: {
-            "Authorization": `Bearer ${token}`,
-          },
-        });
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const responseJson = await response.json();
-        console.log('Race API Response:', responseJson);
-        const data: Race[] = responseJson.data || [];
-        const racesWithChecked = data.map((race) => ({
-          ...race,
-          checked: false,
-        }));
-        setRaces(racesWithChecked);
-      } catch (error) {
-        console.error("Failed to fetch races:", error);
-        setRaces([]);
-      }
-    }
-    
-    const handleUmamusumeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-      const selectedId = parseInt(e.target.value);
-      const selected = umamusumes.find(umamusume => umamusume.umamusume_id === selectedId);
-      if (selected) {
-        setSelectedUmamusume(selected);
-      }
-    };
-
-    const umamusumeRegist = async ()  => {
-      try {
-          if (!token) {
-              console.error('トークンが見つかりません');
-              return;
-          }
-          const response = await fetch("/api/umamusume/regist", {
-              method: "POST",
-              headers: {
-                  "Content-Type": "application/json",
-                  'Authorization': `Bearer ${token}`
-              },
-              body: JSON.stringify({umamusumeId:selectedUmamusume?.umamusume_id,raceIdArray:registRace,fans:fans}),
-          });
-
-          if (!response.ok) {
-              throw new Error("ウマ娘のレース登録に失敗しました");
-          }
-          const data = await response.json();
-          alert(selectedUmamusume?.umamusume_name+"の登録が完了しました！");
-          fetchUmamusumes();
-          fetchRaces();
-          setregistRace([]);
-          setFans(0);
-      } catch (error) {
-
-      }
-    };
-
-    const handleCheckboxChange = (raceId: number, checked: boolean) => {
-      if (checked) {
-        setregistRace((prevState) => [...prevState, raceId]);
-      } else {
-        setregistRace((prevState) => prevState.filter((id) => id !== raceId));
-      }
-      setRaces((prevRaces) =>
-        prevRaces.map((race) =>
-          race.race_id === raceId ? { ...race, checked } : race
-        )
-      );
-    };
-  
-    const handleSelectAll = () => {
-      const allRaceIds = races.map((race) => race.race_id);
-      setRaces((prevRaces) =>
-        prevRaces.map((race) => ({ ...race, checked: true }))
-      );
-      setregistRace(allRaceIds);
-    };
-
-    const handleFansChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = parseInt(e.target.value, 10);
-      if (!isNaN(value)) {
-        setFans(value);
-      }
-    };
+    const {
+      fetchUmamusumes,
+      fetchRaces,
+      handleUmamusumeChange,
+      umamusumeRegist,
+      handleCheckboxChange,
+      handleSelectAll,
+      handleFansChange
+    } = useCharacterRegist(token, {
+      races,
+      setRaces,
+      umamusumes,
+      setUmamusumes,
+      selectedUmamusume,
+      setSelectedUmamusume,
+      registRace,
+      setregistRace,
+      fans,
+      setFans
+    });
 
   return (
       <div>
