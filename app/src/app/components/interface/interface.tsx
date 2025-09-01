@@ -120,13 +120,7 @@ export interface RemainingRace{
     dirtClassicRace:number;
 }
 
-//暫定　全冠への必要計算処理用のインターフェース
-export interface RaceEntryPattern{
-    //推奨因子
-    requiredsFactor:string[],
-    //推奨シナリオ
-    selectScenario:string
-}
+
 
 //ファン数効率計算処理で表示するレース情報を格納するインターフェース
 export interface ReservedRace{

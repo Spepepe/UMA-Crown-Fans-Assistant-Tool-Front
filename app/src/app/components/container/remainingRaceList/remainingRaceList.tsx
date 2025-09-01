@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Umamusume, RemainingRace, RaceEntryPattern } from '../../interface/interface';
+import { Umamusume, RemainingRace } from '../../interface/interface';
 import { RemainingRaceListHeader } from './remainingRaceListHeader';
 import { RemainingRaceListData } from './remainingRaceListData';
 import { RemainingRaceListManual } from "./remainingRaceListManual";
@@ -15,14 +15,8 @@ export const RemainingRaceList : React.FC<RemainingRaceListProps> = ({token})  =
     //ローディング画面
     const [loading, setLoading] = useState<boolean>(true);
     
-    //ウマ娘を選択しているか判定する
-    const [isCheckRace, setIsCheckRace] = useState<boolean>(false);
-    
     //選択したウマ娘情報を格納する
     const [selectUmamusume, setSelectUmamusume] = useState<Umamusume | undefined>(undefined);
-    
-    //推奨情報を格納する
-    const [raceEntryPattern, setRaceEntryPattern] = useState<RaceEntryPattern>();
     
     //レース出走処理画面の表示有無
     const [isManualRaces, setIsManualRaces] = useState<boolean>(false);
@@ -47,38 +41,17 @@ export const RemainingRaceList : React.FC<RemainingRaceListProps> = ({token})  =
       }
     }
 
-    //レース出走推奨パターンを取得する
-    const fetchEntryPattern = async (umamusume: Umamusume): Promise<void> => {
-      if (!token) {
-        console.error('トークンが見つかりません');
-        return;
-      }
-      const data = await remainingRaceService.fetchEntryPattern(token, umamusume);
-      if (data) {
-        setRaceEntryPattern(data);
-      }
-    };
-
     //出走を行う処理
     const openCheckRaces = (umamusume: Umamusume): void => {
       setSelectUmamusume(umamusume);
-      fetchEntryPattern(umamusume);
-      setIsCheckRace(true);
+      setIsManualRaces(true);
     };
 
     //戻るボタンを押下した処理
     const returnCheckRaces = (): void => {
       fetchRaces();
-      setIsCheckRace(false);
       setIsManualRaces(false);
     }
-
-    //レース出走を表示する
-    const onManualRaces = (): void => {
-      setIsManualRaces(true);
-    }
-
-
 
     if (loading) {
       return <div className="min-h-full flex justify-center bg-cover"></div>
@@ -86,51 +59,6 @@ export const RemainingRaceList : React.FC<RemainingRaceListProps> = ({token})  =
     
     if (isManualRaces) {
       return <RemainingRaceListManual umamusume={selectUmamusume} token={token} onReturn={returnCheckRaces}></RemainingRaceListManual>
-    }
-
-    if (isCheckRace){
-      return (
-        <div className="w-full h-screen flex flex-col items-center justify-center space-y-8">
-          <div className="flex justify-center w-full max-w-[600px] p-4">
-            <div className="flex justify-center w-full">
-              <span className="font-bold text-2xl">{selectUmamusume?.umamusume_name}</span>
-            </div>
-          </div>
-
-        <div className="flex justify-between w-full max-w-[600px] bg-white p-4 rounded-xl shadow-lg">
-          <div className="flex justify-between w-full">
-            <span className="pr-4 text-lg text-gray-600">おすすめシナリオ</span>
-            <span className="pl-4 font-bold text-2xl">{raceEntryPattern?.selectScenario}</span>
-          </div>
-        </div>
-
-        <div className="w-full max-w-[600px]">
-          <span className="text-lg text-gray-600 text-center">おすすめ因子</span>
-          <div className="mt-6 space-y-6">
-            {raceEntryPattern?.requiredsFactor.map((factor, index) => (
-              <div key={index} className="flex justify-center items-center bg-white p-4 rounded-xl shadow-md hover:bg-pink-50">
-                <div className="flex justify-between w-full space-x-4">
-                  <span className="text-lg font-semibold text-purple-800">{factor}</span>
-                  <span className="text-xl text-yellow-500">★ ★ ★</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      
-      
-            <div className="flex flex-col space-y-6">
-                <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-lg text-xl"
-                onClick={onManualRaces}>
-                    出走
-                </button>
-                <button className="bg-red-500 hover:bg-gray-700 text-white font-bold py-4 px-8 rounded-lg" 
-                onClick={returnCheckRaces}>
-                    戻る
-                </button>
-            </div>
-          </div>
-      )
     }
 
     return (
@@ -143,7 +71,7 @@ export const RemainingRaceList : React.FC<RemainingRaceListProps> = ({token})  =
         <RemainingRaceListHeader></RemainingRaceListHeader>
         <tbody>
           {remainingRaces.map((remainingRace) => (
-            <RemainingRaceListData key={remainingRace.umamusume.umamusume_id} remainingRace={remainingRace} checkRaces={openCheckRaces} />
+            <RemainingRaceListData key={remainingRace.umamusume.umamusume_id} remainingRace={remainingRace} checkRaces={() => openCheckRaces(remainingRace.umamusume)} />
           ))}
         </tbody>
       </table>
