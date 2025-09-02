@@ -15,6 +15,7 @@ export const FactorCalculator: React.FC = () => {
   const [grandparentUmamusume, setGrandparentUmamusume] = useState<Umamusume>();
 
   const [grandmotherUmamusume, setGrandmotherUmamusume] = useState<Umamusume>();
+  
   const [distanceId, setDistanceId] = useState<number>(1);
 
   const [surfaceId, setSurfaceId] = useState<number>(1);
