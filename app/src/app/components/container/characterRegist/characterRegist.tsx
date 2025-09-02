@@ -62,16 +62,16 @@ export const CharacterRegist : React.FC<CharacterRegistProps> = ({token}) => {
   
           <div className="w-1/2 h-96 flex-grow flex flex-col justify-center">
           <h2 className="text-2xl font-semibold"></h2>
-          <select 
+            <select 
             className="mt-2 p-4 border rounded-lg text-lg transition-all duration-300 transform hover:scale-105 hover:text-shadow-xl focus:ring-2 focus:ring-blue-500"
-            value={selectedUmamusume?.umamusume_id}
-            onChange={handleUmamusumeChange}
-            style={{
-              backgroundColor: '#a8d5ba',
-              color: '#ff69b4',
-              fontFamily: 'Dancing Script, sans-serif',
-            }}
-          >
+              value={selectedUmamusume?.umamusume_id}
+              onChange={handleUmamusumeChange}
+              style={{
+                backgroundColor: '#a8d5ba',
+                color: '#ff69b4',
+                fontFamily: 'Dancing Script, sans-serif',
+              }}
+            >
             {umamusumes.map(umamusume => (
               <option 
                 key={umamusume.umamusume_id} 
@@ -81,7 +81,7 @@ export const CharacterRegist : React.FC<CharacterRegistProps> = ({token}) => {
                 {umamusume.umamusume_name}
               </option>
             ))}
-          </select>
+            </select>
 
             <div className="flex justify-evenly items-center gap-6 mt-2">
               <Aptitude name="芝" aptitude={selectedUmamusume?.turf_aptitude} />
@@ -104,13 +104,6 @@ export const CharacterRegist : React.FC<CharacterRegistProps> = ({token}) => {
         </div>
       </div>
   
-      <div className="mt-6 ml-4">
-        <button
-          className="bg-green-500 text-white py-2 px-4 rounded-md shadow-md hover:bg-green-600"
-          onClick={handleSelectAll}>
-          全出走
-        </button> 
-      </div>
 
       <div className="mt-6">
         <div className="overflow-y-auto max-h-[calc(100vh-22rem)] h-96">
@@ -126,6 +119,11 @@ export const CharacterRegist : React.FC<CharacterRegistProps> = ({token}) => {
 
   
         <div className="mt-6 flex justify-center items-center space-x-4">
+          <button
+            className="bg-green-500 text-white py-2 px-4 rounded-md shadow-md hover:bg-green-600"
+            onClick={handleSelectAll}>
+            全出走
+          </button>
           <label htmlFor="fans" className="text-xl text-pink-600 font-semibold" style={{ fontFamily: 'Poppins, sans-serif' }}>
             獲得ファン数
           </label>
