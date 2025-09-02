@@ -62,11 +62,12 @@ export const RemainingRaceList : React.FC<RemainingRaceListProps> = ({token})  =
     }
 
     return (
-      <table className="table-auto w-full border-collapse border border-gray-300">
+      <table className="table-fixed w-full border-collapse border border-gray-300">
         <thead className="sticky top-0 bg-white z-10">
-          <th colSpan={3} className="border border-gray-300 px-4 py-2">基本情報</th>
-          <th colSpan={4} className="border border-gray-300 px-4 py-2 bg-green-400">芝</th>
-          <th colSpan={3} className="border border-gray-300 px-4 py-2 bg-red-400">ダート</th>
+          <th colSpan={2} className="border border-gray-300 px-2 py-2">処理</th>
+          <th colSpan={3} className="border border-gray-300 px-2 py-2">情報</th>
+          <th colSpan={4} className="border border-gray-300 px-2 py-2 bg-green-400">芝</th>
+          <th colSpan={3} className="border border-gray-300 px-2 py-2 bg-red-400">ダート</th>
         </thead>
         <RemainingRaceListHeader></RemainingRaceListHeader>
         <tbody>

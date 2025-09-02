@@ -102,6 +102,8 @@ export interface RemainingRace{
     umamusume:Umamusume;
     //全冠か判定する
     isAllCrown:boolean;
+    //全冠までの目安育成数
+    breedingCount:number;
     //全ての残レース数を格納する
     allCrownRace:number;
     //芝・短距離の残レース数
