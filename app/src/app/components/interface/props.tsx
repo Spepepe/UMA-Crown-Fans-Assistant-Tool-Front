@@ -177,7 +177,8 @@ export interface RemainingRaceListProps {
 //remainingRaceListData.tsxで利用する
 export interface RemainingRaceListDataProps {
     remainingRace: RemainingRace;
-    checkRaces: (umamusume: Umamusume) => void;   
+    checkRaces: (umamusume: Umamusume) => void;
+    getRacePattern: (umamusume: Umamusume , count:number) => void;
 }
 
 //remainingRaceListItem.tsxで利用する

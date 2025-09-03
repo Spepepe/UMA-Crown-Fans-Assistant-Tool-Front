@@ -3,11 +3,16 @@ import { TdItem } from '../../common/tdItem';
 import { RemainingRaceListDataProps } from '../../interface/props';
 
 //声優情報表示画面のレコード情報を定義する
-export const RemainingRaceListData: React.FC<RemainingRaceListDataProps> = ({ remainingRace , checkRaces }) => {
+export const RemainingRaceListData: React.FC<RemainingRaceListDataProps> = ({ remainingRace , checkRaces, getRacePattern }) => {
 
     //出走画面表示処理を親へ通知する
     const handleClick = () => {
         checkRaces(remainingRace.umamusume);
+    };
+
+    //レースパターン表示処理を親へ通知する
+    const handleRacePattern = () => {
+        getRacePattern(remainingRace.umamusume);
     };
 
     return (
@@ -29,7 +34,7 @@ export const RemainingRaceListData: React.FC<RemainingRaceListDataProps> = ({ re
                     <span>全冠</span>
                 ) : (
                     <button
-                        onClick={handleClick}
+                        onClick={handleRacePattern}
                         className="bg-green-500 hover:bg-blue-700 text-white font-bold py-6 px-4 rounded"
                     >
                         パターン
